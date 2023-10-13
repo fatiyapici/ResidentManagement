@@ -11,7 +11,7 @@ using ResidentManagement.Data;
 namespace ResidentManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231012113421_UserMigration")]
+    [Migration("20231013123724_UserMigration")]
     partial class UserMigration
     {
         /// <inheritdoc />
@@ -202,10 +202,6 @@ namespace ResidentManagement.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");
