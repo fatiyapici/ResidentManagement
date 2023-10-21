@@ -11,7 +11,7 @@ using ResidentManagement.Data;
 namespace ResidentManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231013123724_UserMigration")]
+    [Migration("20231018125138_UserMigration")]
     partial class UserMigration
     {
         /// <inheritdoc />
