@@ -75,6 +75,10 @@ namespace ResidentManagement.Areas.Identity.Pages.Account
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
+            
+            [Required]
+            [Display(Name = "Username")]
+            public string UserName { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -111,7 +115,6 @@ namespace ResidentManagement.Areas.Identity.Pages.Account
             public string Role { get; set; }
         }
 
-
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
@@ -126,7 +129,7 @@ namespace ResidentManagement.Areas.Identity.Pages.Account
             {
                 var user = new User
                 {
-                    UserName = Input.Email,
+                    UserName = Input.UserName,
                     Email = Input.Email,
                     Name = Input.Name,
                     Surname = Input.Surname,
