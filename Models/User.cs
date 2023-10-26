@@ -16,4 +16,6 @@ public class User : IdentityUser
 
     [Display(Name = "Vehicle Plate")]
     public string? VehiclePlate { get; set; }
+    
+    public ICollection<Apartment> Apartments { get; set; }
 }
