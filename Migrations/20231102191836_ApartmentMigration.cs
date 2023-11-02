@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ResidentManagement.Migrations
 {
     /// <inheritdoc />
-    public partial class UserMigration : Migration
+    public partial class ApartmentMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -71,6 +71,31 @@ namespace ResidentManagement.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Apartments",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    Number = table.Column<int>(type: "INTEGER", nullable: false),
+                    Floor = table.Column<int>(type: "INTEGER", nullable: false),
+                    Block = table.Column<string>(type: "TEXT", nullable: false),
+                    ApartmentType = table.Column<string>(type: "TEXT", nullable: false),
+                    Status = table.Column<string>(type: "TEXT", nullable: false),
+                    OwnerOrTenant = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Apartments", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Apartments_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -161,6 +186,11 @@ namespace ResidentManagement.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Apartments_UserId",
+                table: "Apartments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
@@ -201,6 +231,9 @@ namespace ResidentManagement.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Apartments");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 

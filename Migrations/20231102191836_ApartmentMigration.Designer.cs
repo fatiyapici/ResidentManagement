@@ -11,8 +11,8 @@ using ResidentManagement.Data;
 namespace ResidentManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231018125138_UserMigration")]
-    partial class UserMigration
+    [Migration("20231102191836_ApartmentMigration")]
+    partial class ApartmentMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -152,6 +152,45 @@ namespace ResidentManagement.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ResidentManagement.Apartment", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ApartmentType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Block")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Floor")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("OwnerOrTenant")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Apartments");
+                });
+
             modelBuilder.Entity("ResidentManagement.User", b =>
                 {
                     b.Property<string>("Id")
@@ -281,6 +320,22 @@ namespace ResidentManagement.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ResidentManagement.Apartment", b =>
+                {
+                    b.HasOne("ResidentManagement.User", "User")
+                        .WithMany("Apartments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ResidentManagement.User", b =>
+                {
+                    b.Navigation("Apartments");
                 });
 #pragma warning restore 612, 618
         }
