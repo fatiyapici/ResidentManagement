@@ -9,4 +9,5 @@ public class ApplicationDbContext : IdentityDbContext<User>
         : base(options)
     {
     }
+    public DbSet<Apartment> Apartments { get; set; }
 }
