@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ResidentManagement;
 using ResidentManagement.Data;
+using ResidentManagement.ViewModels;
 
 namespace ResidentManagement.Controllers
 {
@@ -22,10 +17,13 @@ namespace ResidentManagement.Controllers
         // GET: Apartment
         public async Task<IActionResult> Index()
         {
-            //Console.ReadLine();
-              return _context.Apartments != null ? 
-                          View(await _context.Apartments.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Apartments'  is null.");
+            var apartments = await _context.Apartments
+                            .Include(a => a.User)
+                            .ToListAsync();
+
+            return _context.Apartments != null ?
+                        View(await _context.Apartments.ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.Apartments'  is null.");
         }
 
         // GET: Apartment/Details/5
@@ -57,7 +55,7 @@ namespace ResidentManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,UserId,Number,Floor,Block,ApartmentType,Status,OwnerOrTenant")] Apartment apartment)
+        public async Task<IActionResult> Create([Bind("ID,Number,Floor,Block,ApartmentType,Status,OwnerOrTenant")] Apartment apartment)
         {
             if (ModelState.IsValid)
             {
@@ -81,7 +79,13 @@ namespace ResidentManagement.Controllers
             {
                 return NotFound();
             }
-            return View(apartment);
+            var viewModel = new ApartmentDetailViewModel();
+            viewModel.ID = apartment.ID;
+            viewModel.IdentityNo = apartment.User != null ? apartment.User.IdentityNo : null;
+            viewModel.Status = apartment.Status;
+            viewModel.ApartmentType = apartment.ApartmentType;
+            viewModel.OwnerOrTenant = apartment.OwnerOrTenant;
+            return View(viewModel);
         }
 
         // POST: Apartment/Edit/5
@@ -89,15 +93,36 @@ namespace ResidentManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,UserId,Number,Floor,Block,ApartmentType,Status,OwnerOrTenant")] Apartment apartment)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,IdentityNo,ApartmentType,Status,OwnerOrTenant")] ApartmentDetailViewModel viewModel)
         {
-            if (id != apartment.ID)
+            if (id != viewModel.ID)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var apartment = await _context.Apartments.FindAsync(viewModel.ID);
+                if (apartment == null)
+                {
+                    return NotFound();
+                }
+                if (!string.IsNullOrEmpty(viewModel.IdentityNo))
+                {
+                    var user = _context.Users.FirstOrDefault(x => x.IdentityNo == viewModel.IdentityNo);
+                    if (user == null)
+                    {
+                        return NotFound();
+                    }
+                    apartment.UserId = user.Id;
+                }
+                else
+                {
+                    apartment.UserId = null;
+                }
+                apartment.ApartmentType = viewModel.ApartmentType;
+                apartment.Status = viewModel.Status;
+                apartment.OwnerOrTenant = viewModel.OwnerOrTenant;
                 try
                 {
                     _context.Update(apartment);
@@ -116,7 +141,7 @@ namespace ResidentManagement.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(apartment);
+            return View(viewModel);
         }
 
         // GET: Apartment/Delete/5
@@ -151,14 +176,14 @@ namespace ResidentManagement.Controllers
             {
                 _context.Apartments.Remove(apartment);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ApartmentExists(int id)
         {
-          return (_context.Apartments?.Any(e => e.ID == id)).GetValueOrDefault();
+            return (_context.Apartments?.Any(e => e.ID == id)).GetValueOrDefault();
         }
     }
 }

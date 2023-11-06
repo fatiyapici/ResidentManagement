@@ -1,4 +1,4 @@
-@model ResidentManagement.Apartment
+@model ResidentManagement.ViewModels.ApartmentDetailViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -14,24 +14,9 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Number" class="control-label"></label>
-                <input asp-for="Number" class="form-control" />
-                <span asp-validation-for="Number" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Floor" class="control-label"></label>
-                <input asp-for="Floor" class="form-control" />
-                <span asp-validation-for="Floor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Block" class="control-label"></label>
-                <input asp-for="Block" class="form-control" />
-                <span asp-validation-for="Block" class="text-danger"></span>
+                <label asp-for="IdentityNo" class="control-label"></label>
+                <input asp-for="IdentityNo" class="form-control" />
+                <span asp-validation-for="IdentityNo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ApartmentType" class="control-label"></label>
