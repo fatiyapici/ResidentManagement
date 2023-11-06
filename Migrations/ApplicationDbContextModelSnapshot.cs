@@ -178,7 +178,6 @@ namespace ResidentManagement.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
@@ -323,9 +322,7 @@ namespace ResidentManagement.Migrations
                 {
                     b.HasOne("ResidentManagement.User", "User")
                         .WithMany("Apartments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

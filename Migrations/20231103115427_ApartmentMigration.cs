@@ -81,7 +81,7 @@ namespace ResidentManagement.Migrations
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
                     Number = table.Column<int>(type: "INTEGER", nullable: false),
                     Floor = table.Column<int>(type: "INTEGER", nullable: false),
                     Block = table.Column<string>(type: "TEXT", nullable: false),
@@ -96,8 +96,7 @@ namespace ResidentManagement.Migrations
                         name: "FK_Apartments_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
