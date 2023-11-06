@@ -35,7 +35,8 @@ namespace ResidentManagement.Controllers
             }
 
             var apartment = await _context.Apartments
-                .FirstOrDefaultAsync(m => m.ID == id);
+                            .Include(a => a.User)
+                            .FirstOrDefaultAsync(m => m.ID == id);
             if (apartment == null)
             {
                 return NotFound();
