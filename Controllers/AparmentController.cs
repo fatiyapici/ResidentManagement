@@ -113,7 +113,8 @@ namespace ResidentManagement.Controllers
                     var user = _context.Users.FirstOrDefault(x => x.IdentityNo == viewModel.IdentityNo);
                     if (user == null)
                     {
-                        return NotFound();
+                        ModelState.AddModelError("IdentityNo", "User not found");
+                        return View(viewModel);
                     }
                     apartment.UserId = user.Id;
                 }
