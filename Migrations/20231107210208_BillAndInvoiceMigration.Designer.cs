@@ -11,8 +11,8 @@ using ResidentManagement.Data;
 namespace ResidentManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231103115427_ApartmentMigration")]
-    partial class ApartmentMigration
+    [Migration("20231107210208_BillAndInvoiceMigration")]
+    partial class BillAndInvoiceMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -190,6 +190,57 @@ namespace ResidentManagement.Migrations
                     b.ToTable("Apartments");
                 });
 
+            modelBuilder.Entity("ResidentManagement.Bill", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Session")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Bills");
+                });
+
+            modelBuilder.Entity("ResidentManagement.Invoice", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("ApartmentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Session")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ApartmentId");
+
+                    b.ToTable("Invoices");
+                });
+
             modelBuilder.Entity("ResidentManagement.User", b =>
                 {
                     b.Property<string>("Id")
@@ -328,6 +379,17 @@ namespace ResidentManagement.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ResidentManagement.Invoice", b =>
+                {
+                    b.HasOne("ResidentManagement.Apartment", "Apartment")
+                        .WithMany()
+                        .HasForeignKey("ApartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Apartment");
                 });
 
             modelBuilder.Entity("ResidentManagement.User", b =>

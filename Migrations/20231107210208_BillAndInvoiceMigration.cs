@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ResidentManagement.Migrations
 {
     /// <inheritdoc />
-    public partial class ApartmentMigration : Migration
+    public partial class BillAndInvoiceMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -52,6 +52,22 @@ namespace ResidentManagement.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bills",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Session = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bills", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -184,6 +200,28 @@ namespace ResidentManagement.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Invoices",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ApartmentId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Session = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoices", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Apartments_ApartmentId",
+                        column: x => x.ApartmentId,
+                        principalTable: "Apartments",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Apartments_UserId",
                 table: "Apartments",
@@ -225,14 +263,16 @@ namespace ResidentManagement.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoices_ApartmentId",
+                table: "Invoices",
+                column: "ApartmentId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Apartments");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -249,7 +289,16 @@ namespace ResidentManagement.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Bills");
+
+            migrationBuilder.DropTable(
+                name: "Invoices");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Apartments");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
