@@ -17,6 +17,18 @@
             @Html.DisplayFor(model => model.User.IdentityNo)
         </dd>
         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.User.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Surname)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.User.Surname)
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Number)
         </dt>
         <dd class = "col-sm-10">
@@ -51,6 +63,12 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.OwnerOrTenant)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.User.VehiclePlate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.User.VehiclePlate)
         </dd>
     </dl>
 </div>
