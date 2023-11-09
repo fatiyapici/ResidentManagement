@@ -59,18 +59,23 @@ namespace ResidentManagement.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [Display(Name = "Vehicle Plate")]
+            public string VehiclePlate { get; set; }
         }
 
         private async Task LoadAsync(User user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var vehiclePlate = user.VehiclePlate;
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                VehiclePlate = vehiclePlate
             };
         }
 
@@ -109,6 +114,12 @@ namespace ResidentManagement.Areas.Identity.Pages.Account.Manage
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();
                 }
+            }
+
+            if (Input.VehiclePlate != user.VehiclePlate)
+            {
+                user.VehiclePlate = Input.VehiclePlate;
+                await _userManager.UpdateAsync(user);
             }
 
             await _signInManager.RefreshSignInAsync(user);
