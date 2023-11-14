@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +9,12 @@ namespace ResidentManagement.Controllers
     public class InvoiceController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public InvoiceController(ApplicationDbContext context)
+        public InvoiceController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Invoice
@@ -28,22 +31,36 @@ namespace ResidentManagement.Controllers
             {
                 return NotFound();
             }
-
             var invoice = await _context.Invoices
                 .Include(i => i.Apartment)
                 .FirstOrDefaultAsync(m => m.ID == id);
+
             if (invoice == null)
             {
                 return NotFound();
             }
-
             return View(invoice);
         }
 
         // GET: Invoice/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["ApartmentId"] = new SelectList(_context.Apartments, "ID", "ID");
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+            var userApartments = await _context.Apartments
+                                .Include(a => a.User)
+                                .Where(x => x.UserId == user.Id)
+                                .Select(x => new ApartmentDropdownOptions(x.ID, "Number: " + x.Number + " Floor: " + x.Floor + " Block: " + x.Block))
+                                .ToListAsync();
+
+            if (userApartments == null || userApartments.Count == 0)
+            {
+                return NotFound("User apartments not found.");
+            }
+            ViewData["UserApartments"] = new SelectList(userApartments, "ID", "NumberFloorInfo");
             return View();
         }
 
@@ -52,14 +69,25 @@ namespace ResidentManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,ApartmentId,Session,Amount,Description")] Invoice invoice)
+        public async Task<IActionResult> Create([Bind("ID,Session,Amount,Description")] Invoice invoice)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(invoice);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var user = await _userManager.GetUserAsync(User);
+                var userApartment = user.Apartments.FirstOrDefault();
+                if (userApartment != null)
+                {
+                    invoice.ApartmentId = userApartment.ID;
+                    _context.Add(invoice);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "You don't have any assigned apartment. Please contact the administrator.");
+                }
             }
+
             ViewData["ApartmentId"] = new SelectList(_context.Apartments, "ID", "ID", invoice.ApartmentId);
             return View(invoice);
         }
@@ -150,14 +178,14 @@ namespace ResidentManagement.Controllers
             {
                 _context.Invoices.Remove(invoice);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool InvoiceExists(int id)
         {
-          return (_context.Invoices?.Any(e => e.ID == id)).GetValueOrDefault();
+            return (_context.Invoices?.Any(e => e.ID == id)).GetValueOrDefault();
         }
     }
 }
