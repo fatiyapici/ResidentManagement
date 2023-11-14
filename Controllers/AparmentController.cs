@@ -18,12 +18,12 @@ namespace ResidentManagement.Controllers
         public async Task<IActionResult> Index()
         {
             var apartments = await _context.Apartments
-                            .Include(a => a.User)
-                            .ToListAsync();
+                                .Include(a => a.User)
+                                .ToListAsync();
 
-            return _context.Apartments != null ?
-                        View(await _context.Apartments.ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.Apartments'  is null.");
+            return apartments != null ?
+                        View(apartments) :
+                        Problem("Entity set 'ApplicationDbContext.Apartments' is null.");
         }
 
         // GET: Apartment/Details/5
