@@ -50,17 +50,17 @@ namespace ResidentManagement.Controllers
             {
                 return NotFound("User not found.");
             }
+
             var userApartments = await _context.Apartments
-                                .Include(a => a.User)
-                                .Where(x => x.UserId == user.Id)
-                                .Select(x => new ApartmentDropdownOptions(x.ID, "Number: " + x.Number + " Floor: " + x.Floor + " Block: " + x.Block))
-                                .ToListAsync();
+                .Where(x => x.UserId == user.Id)
+                .Select(x => new ApartmentDropdownOptions(x.ID, "Number: " + x.Number + " Floor: " + x.Floor + " Block: " + x.Block))
+                .ToListAsync();
 
             if (userApartments == null || userApartments.Count == 0)
             {
                 return NotFound("User apartments not found.");
             }
-            ViewData["UserApartments"] = new SelectList(userApartments, "ID", "NumberFloorInfo");
+            ViewData["UserApartments"] = new SelectList(userApartments, "ID", "NumberFloorBlockInfo");
             return View();
         }
 
@@ -69,12 +69,18 @@ namespace ResidentManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Session,Amount,Description")] Invoice invoice)
+        public async Task<IActionResult> Create([Bind("ID,ApartmentId,Session,Amount,Description")] InvoiceCreateViewModel invoice)
         {
+            var user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
             {
-                var user = await _userManager.GetUserAsync(User);
-                var userApartment = user.Apartments.FirstOrDefault();
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                var userApartment = await _context.Apartments.FirstOrDefaultAsync(x => x.UserId == user.Id);
+
                 if (userApartment != null)
                 {
                     invoice.ApartmentId = userApartment.ID;
@@ -87,8 +93,11 @@ namespace ResidentManagement.Controllers
                     ModelState.AddModelError(string.Empty, "You don't have any assigned apartment. Please contact the administrator.");
                 }
             }
-
-            ViewData["ApartmentId"] = new SelectList(_context.Apartments, "ID", "ID", invoice.ApartmentId);
+            var userApartments = await _context.Apartments
+               .Where(x => x.UserId == user.Id)
+               .Select(x => new ApartmentDropdownOptions(x.ID, "Number: " + x.Number + " Floor: " + x.Floor + " Block: " + x.Block))
+               .ToListAsync();
+            ViewData["UserApartments"] = new SelectList(userApartments, "ID", "NumberFloorBlockInfo", invoice.ApartmentId);
             return View(invoice);
         }
 
