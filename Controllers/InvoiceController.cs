@@ -69,7 +69,7 @@ namespace ResidentManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,ApartmentId,Session,Amount,Description")] InvoiceCreateViewModel invoice)
+        public async Task<IActionResult> Create([Bind("ID,ApartmentId,Session,Amount,Description")] InvoiceCreateViewModel invoiceViewModel)
         {
             var user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
@@ -83,7 +83,14 @@ namespace ResidentManagement.Controllers
 
                 if (userApartment != null)
                 {
-                    invoice.ApartmentId = userApartment.ID;
+                    var invoice = new Invoice
+                    {
+                        ApartmentId = userApartment.ID,
+                        Session = invoiceViewModel.Session,
+                        Amount = invoiceViewModel.Amount,
+                        Description = invoiceViewModel.Description
+                    };
+
                     _context.Add(invoice);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -94,11 +101,12 @@ namespace ResidentManagement.Controllers
                 }
             }
             var userApartments = await _context.Apartments
-               .Where(x => x.UserId == user.Id)
-               .Select(x => new ApartmentDropdownOptions(x.ID, "Number: " + x.Number + " Floor: " + x.Floor + " Block: " + x.Block))
-               .ToListAsync();
-            ViewData["UserApartments"] = new SelectList(userApartments, "ID", "NumberFloorBlockInfo", invoice.ApartmentId);
-            return View(invoice);
+                .Where(x => x.UserId == user.Id)
+                .Select(x => new ApartmentDropdownOptions(x.ID, "Number: " + x.Number + " Floor: " + x.Floor + " Block: " + x.Block))
+                .ToListAsync();
+
+            ViewData["UserApartments"] = new SelectList(userApartments, "ID", "NumberFloorBlockInfo", invoiceViewModel.ApartmentId);
+            return View(invoiceViewModel);
         }
 
         // GET: Invoice/Edit/5
