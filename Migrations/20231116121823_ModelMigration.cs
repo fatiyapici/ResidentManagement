@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ResidentManagement.Migrations
 {
     /// <inheritdoc />
-    public partial class BillAndInvoiceMigration : Migration
+    public partial class ModelMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -63,7 +63,7 @@ namespace ResidentManagement.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Session = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false)
+                    Description = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -209,7 +209,7 @@ namespace ResidentManagement.Migrations
                     ApartmentId = table.Column<int>(type: "INTEGER", nullable: false),
                     Session = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false)
+                    Description = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {

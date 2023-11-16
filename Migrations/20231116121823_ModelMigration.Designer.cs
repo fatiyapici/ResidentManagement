@@ -11,8 +11,8 @@ using ResidentManagement.Data;
 namespace ResidentManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231107210208_BillAndInvoiceMigration")]
-    partial class BillAndInvoiceMigration
+    [Migration("20231116121823_ModelMigration")]
+    partial class ModelMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -200,7 +200,6 @@ namespace ResidentManagement.Migrations
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -228,7 +227,6 @@ namespace ResidentManagement.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Session")
