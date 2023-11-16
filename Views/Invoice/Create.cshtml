@@ -1,4 +1,4 @@
-@model ResidentManagement.Invoice
+@model ResidentManagement.InvoiceCreateViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -25,7 +25,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="Session" class="control-label"></label>
-                <input asp-for="Session" class="form-control" />
+                <input asp-for="Session" class="form-control" placeholder="Select month and year"
+                    onfocus="(this.type='month')" onblur="(this.type='text')" id="date" />
                 <span asp-validation-for="Session" class="text-danger"></span>
             </div>
             <div class="form-group">

@@ -197,7 +197,6 @@ namespace ResidentManagement.Migrations
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -225,7 +224,6 @@ namespace ResidentManagement.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Session")
