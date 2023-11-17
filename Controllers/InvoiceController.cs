@@ -60,8 +60,10 @@ namespace ResidentManagement.Controllers
             {
                 return NotFound("User apartments not found.");
             }
+            var viewModel = new InvoiceCreateViewModel();
+            viewModel.Session = DateTime.Now.ToString("yyyy-MM");
             ViewData["UserApartments"] = new SelectList(userApartments, "ID", "NumberFloorBlockInfo");
-            return View();
+            return View(viewModel);
         }
 
         // POST: Invoice/Create
@@ -83,17 +85,25 @@ namespace ResidentManagement.Controllers
 
                 if (userApartment != null)
                 {
-                    var invoice = new Invoice
+                    DateTime sessionDate;
+                    if (DateTime.TryParse(invoiceViewModel.Session, out sessionDate))
                     {
-                        ApartmentId = userApartment.ID,
-                        Session = invoiceViewModel.Session,
-                        Amount = invoiceViewModel.Amount,
-                        Description = invoiceViewModel.Description
-                    };
+                        var invoice = new Invoice
+                        {
+                            ApartmentId = userApartment.ID,
+                            Session = sessionDate,
+                            Amount = invoiceViewModel.Amount,
+                            Description = invoiceViewModel.Description
+                        };
 
-                    _context.Add(invoice);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                        _context.Add(invoice);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid date format.");
+                    }
                 }
                 else
                 {
