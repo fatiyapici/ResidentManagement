@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ResidentManagement.Migrations
 {
     /// <inheritdoc />
-    public partial class ModelMigration : Migration
+    public partial class InvoiceMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -11,8 +11,8 @@ using ResidentManagement.Data;
 namespace ResidentManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231116121823_ModelMigration")]
-    partial class ModelMigration
+    [Migration("20231120122233_InvoiceMigrations")]
+    partial class InvoiceMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
