@@ -20,7 +20,7 @@ namespace ResidentManagement.Controllers
         // GET: Invoice
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Invoices.Include(i => i.Apartment);
+            var applicationDbContext = _context.Invoices.Include(i => i.Apartment).ThenInclude(x => x.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
