@@ -60,6 +60,17 @@ namespace ResidentManagement.Controllers
         {
             if (ModelState.IsValid)
             {
+                var existingApartment = await _context.Apartments.FirstOrDefaultAsync(a =>
+                                        a.Number == apartment.Number &&
+                                        a.Floor == apartment.Floor &&
+                                        a.Block == apartment.Block);
+
+                if (existingApartment != null)
+                {
+                    ModelState.AddModelError(string.Empty, "An apartment with the same details already exists.");
+                    return View(apartment);
+                }
+
                 _context.Add(apartment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
