@@ -48,7 +48,9 @@ namespace ResidentManagement.Controllers
         // GET: Bill/Create
         public IActionResult Create()
         {
-            return View();
+            var viewModel = new BillCreateViewModel();
+            viewModel.Session = DateTime.Now.ToString("yyyy-MM");
+            return View(viewModel);
         }
 
         // POST: Bill/Create
@@ -56,16 +58,25 @@ namespace ResidentManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,ApartmentId,Name,Session,Amount,Description")] Bill bill)
+        public async Task<IActionResult> Create([Bind("ID,Name,Session,Amount,Description")] BillCreateViewModel billViewModel)
         {
             if (ModelState.IsValid)
             {
+                var bill = new Bill
+                {
+                    Name = billViewModel.Name,
+                    Session = DateTime.Parse(billViewModel.Session),
+                    Amount = billViewModel.Amount,
+                    Description = billViewModel.Description
+                };
+
                 _context.Add(bill);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(bill);
+            return View(billViewModel);
         }
+
 
         // GET: Bill/Edit/5
         public async Task<IActionResult> Edit(int? id)

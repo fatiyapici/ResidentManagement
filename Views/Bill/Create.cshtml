@@ -1,4 +1,4 @@
-@model ResidentManagement.Bill
+@model ResidentManagement.BillCreateViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -24,7 +24,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Session" class="control-label"></label>
-                <input asp-for="Session" class="form-control" />
+                <input asp-for="Session" class="form-control" type="month" />
                 <span asp-validation-for="Session" class="text-danger"></span>
             </div>
             <div class="form-group">
