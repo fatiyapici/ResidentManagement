@@ -60,7 +60,7 @@ namespace ResidentManagement.Controllers
             {
                 return NotFound("User apartments not found.");
             }
-            var viewModel = new InvoiceCreateViewModel();
+            var viewModel = new InvoiceViewModel();
             viewModel.Session = DateTime.Now.ToString("yyyy-MM");
             ViewData["UserApartments"] = new SelectList(userApartments, "ID", "NumberFloorBlockInfo");
             return View(viewModel);
@@ -71,7 +71,7 @@ namespace ResidentManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,ApartmentId,Session,Amount,Description")] InvoiceCreateViewModel invoiceViewModel)
+        public async Task<IActionResult> Create([Bind("ID,ApartmentId,Session,Amount,Description")] InvoiceViewModel invoiceViewModel)
         {
             var user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
@@ -133,6 +133,8 @@ namespace ResidentManagement.Controllers
                 return NotFound();
             }
             ViewData["ApartmentId"] = new SelectList(_context.Apartments, "ID", "ID", invoice.ApartmentId);
+            var viewModel = new InvoiceViewModel();
+            viewModel.Session = DateTime.Now.ToString("yyyy-MM");
             return View(invoice);
         }
 
