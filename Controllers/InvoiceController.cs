@@ -81,7 +81,7 @@ namespace ResidentManagement.Controllers
                     return NotFound("User not found.");
                 }
 
-                var userApartment = await _context.Apartments.FirstOrDefaultAsync(x => x.UserId == user.Id);
+                var userApartment = await _context.Apartments.FirstOrDefaultAsync(x => x.ID == invoiceViewModel.ApartmentId);
 
                 if (userApartment != null)
                 {
