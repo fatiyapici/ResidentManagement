@@ -1,4 +1,4 @@
-@model ResidentManagement.Invoice
+@model ResidentManagement.InvoiceViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -14,13 +14,19 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
-                <label asp-for="ApartmentId" class="control-label"></label>
-                <select asp-for="ApartmentId" class="form-control" asp-items="ViewBag.ApartmentId"></select>
+                <label asp-for="ApartmentId" class="control-label">Number/Floor/Block</label>
+                <select asp-for="ApartmentId" class="form-control">
+                    <option value="">Choose an apartment</option>
+                    @foreach (var apartment in ViewData["UserApartments"] as SelectList)
+                    {
+                        <option value="@apartment.Value">@apartment.Text</option>
+                    }
+                </select>
                 <span asp-validation-for="ApartmentId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Session" class="control-label"></label>
-                <input asp-for="Session" class="form-control" />
+                <input asp-for="Session" class="form-control" type="month" />
                 <span asp-validation-for="Session" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -45,5 +51,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
