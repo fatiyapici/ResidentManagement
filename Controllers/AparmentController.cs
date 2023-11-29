@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ResidentManagement.Data;
@@ -5,6 +6,7 @@ using ResidentManagement.ViewModels;
 
 namespace ResidentManagement.Controllers
 {
+    [Authorize(Roles = "Manager")]
     public class ApartmentController : Controller
     {
         private readonly ApplicationDbContext _context;

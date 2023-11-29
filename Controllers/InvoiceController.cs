@@ -20,8 +20,31 @@ namespace ResidentManagement.Controllers
         // GET: Invoice
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Invoices.Include(i => i.Apartment).ThenInclude(x => x.User);
-            return View(await applicationDbContext.ToListAsync());
+            if (User.IsInRole("Manager"))
+            {
+                var allApartmentsInvoices = _context.Invoices
+                    .Include(i => i.Apartment);
+                    
+                return View(await allApartmentsInvoices.ToListAsync());
+            }
+            
+            else if (User.IsInRole("Resident"))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                var userInvoices = _context.Invoices
+                    .Include(i => i.Apartment)
+                    .ThenInclude(x => x.User)
+                    .Where(i => i.Apartment.User.Id == user.Id);
+
+                return View(await userInvoices.ToListAsync());
+            }
+
+            return Forbid();
         }
 
         // GET: Invoice/Details/5
